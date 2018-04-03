@@ -7,7 +7,11 @@ import io from 'socket.io-client';
 
 
 function get_io(msg_list) {
-    var socket = io(location.origin);
+    var socket = io(location.origin, {
+        query: {
+            id: 3434,
+        }
+    });
 
     var id = 0;
 
