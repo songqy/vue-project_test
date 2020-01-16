@@ -1,24 +1,28 @@
 <template>
   <div class="crawler">
     <div>
-        <el-button type="primary">嘻嘻嘻</el-button>
-        <el-cascader
-            v-model="value"
-            :options="options"
-            :show-all-levels="false"
-            @change="handleChange"
-            :props="{ expandTrigger: 'hover' }"
-        />
-
+      <el-button type="primary">嘻嘻嘻</el-button>
+      <el-cascader
+        v-model="value"
+        :options="options"
+        :show-all-levels="false"
+        @change="handleChange"
+        :props="{ expandTrigger: 'hover' }"
+      />
+      <div>
+        <div v-for="img in imgs" :key=img.index>
+          <img :src=img.src>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import cloneDeep from 'lodash/cloneDeep'
+import { cloneDeep } from 'lodash'
 import request from '../utils/request'
 
-const parseOptions = (files) => {
+const parseOptions = files => {
   if (!files || files.length <= 0) {
     return null
   }
@@ -50,11 +54,20 @@ const parseImgs = (imgs, value) => {
   }
 
   let imgName = imgs.map(v => v.filePath)
-  imgName = imgName.filter(v => v.match(/img*/))
+  imgName = imgName.filter(v => v.match(/img\d+.*/))
 
-  // TODO sort
+  imgName = imgName.map(img => {
+    return {
+      src: `/api_crawler/file${prefix}/${img}`,
+      index: parseInt(img.slice(3))
+    }
+  })
 
-  return imgName.map(img => `${prefix}/${img}`)
+  imgName.sort((a, b) => {
+    return a.index - b.index
+  })
+
+  return imgName
 }
 
 export default {
@@ -64,7 +77,7 @@ export default {
   imgs: [],
 
   mounted: async function () {
-    const {content} = await request.get('/api_crawler/files')
+    const { content } = await request.get('/api_crawler/files')
     this.files = cloneDeep(content.files)
     this.options = parseOptions(content.files)
     console.log(this.options)
@@ -93,5 +106,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
