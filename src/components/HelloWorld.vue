@@ -86,14 +86,12 @@
 </template>
 
 <script>
-import request from '../utils/request'
+
 export default {
   name: 'HelloWorld',
 
-  mounted: async function () {
-    const res = await request.get('/api_crawler/files')
-    console.log(res)
-    this.name = res
+  mounted: function () {
+
   },
 
   data () {

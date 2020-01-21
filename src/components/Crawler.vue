@@ -1,20 +1,17 @@
 <template>
   <div class="crawler">
-    <div>
-      <el-button type="primary">嘻嘻嘻</el-button>
-      <el-cascader
-        v-model="value"
-        :options="options"
-        :show-all-levels="false"
-        @change="handleChange"
-        :props="{ expandTrigger: 'hover' }"
-      />
-      <div>
-        <div v-for="img in imgs" :key=img.index>
-          <img :src=img.src>
+    <el-row class="tac">
+      <el-col :span="4">
+        <tree-menu @onSelect=onSelect :files=options></tree-menu>
+      </el-col>
+      <el-col :span="20">
+        <div class="content">
+          <div v-for="img in imgs" :key=img.index>
+            <img :src=img.src>
+          </div>
         </div>
-      </div>
-    </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -22,17 +19,24 @@
 import { cloneDeep } from 'lodash'
 import request from '../utils/request'
 
-const parseOptions = files => {
+// 判断是否文件夹
+const isDir = (path) => {
+  return !path.match(/\./)
+}
+
+const parseOptions = (files, index = '') => {
   if (!files || files.length <= 0) {
     return null
   }
-  if (!files[0].children || files[0].children <= 0) {
-    return null
-  }
+  // if (!files[0].children || files[0].children <= 0) {
+  //   return null
+  // }
   files.forEach(file => {
     file.value = file.filePath
     file.label = file.filePath
-    file.children = parseOptions(file.children)
+    file.index = `${index}/${file.filePath}`
+    file.children = parseOptions(file.children, file.index)
+    file.hasChildren = file.children && file.children.length > 0 && isDir(file.children[0].value)
   })
   return files
 }
@@ -42,6 +46,10 @@ const getImgList = (files, value) => {
   const file2 = file1.children.find(file => file.filePath === value[1])
   if (value[2]) {
     const file3 = file2.children.find(file => file.filePath === value[2])
+    if (value[3]) {
+      const file4 = file3.children.find(file => file.filePath === value[3])
+      return file4.children
+    }
     return file3.children
   }
   return file2.children
@@ -51,6 +59,9 @@ const parseImgs = (imgs, value) => {
   let prefix = `/${value[0]}/${value[1]}`
   if (value[2]) {
     prefix += `/${value[2]}`
+  }
+  if (value[3]) {
+    prefix += `/${value[3]}`
   }
 
   let imgName = imgs.map(v => v.filePath)
@@ -84,12 +95,11 @@ export default {
   },
 
   methods: {
-    handleChange: function (value) {
-      console.log('handleChange')
-      console.log(value)
-
-      const imgs = getImgList(this.files, value)
-      this.imgs = parseImgs(imgs, value)
+    onSelect: function (value) {
+      const values = value.split('/').slice(1)
+      console.log('onSelect,', values)
+      const imgs = getImgList(this.files, values)
+      this.imgs = parseImgs(imgs, values)
     }
   },
 
