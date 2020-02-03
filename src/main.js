@@ -9,7 +9,9 @@ import {
   MenuItem,
   Submenu,
   Row,
-  Col
+  Col,
+  Backtop,
+  Icon
 } from 'element-ui'
 import App from './App'
 import router from './router'
@@ -26,6 +28,8 @@ Vue.use(MenuItem)
 Vue.use(Submenu)
 Vue.use(Row)
 Vue.use(Col)
+Vue.use(Backtop)
+Vue.use(Icon)
 
 Vue.component(TreeMenu.name, TreeMenu)
 Vue.component(TreeSubMenu.name, TreeSubMenu)

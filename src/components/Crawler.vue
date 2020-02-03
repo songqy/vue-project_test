@@ -1,5 +1,6 @@
 <template>
   <div class="crawler">
+    <el-backtop target=".content"></el-backtop>
     <el-row class="tac">
       <el-col :span="4">
         <tree-menu @onSelect=onSelect :files=options></tree-menu>
@@ -116,4 +117,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.content {
+  height: 100vh;
+  overflow: scroll;
+}
 </style>
