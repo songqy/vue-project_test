@@ -3,7 +3,9 @@
     <el-backtop target=".content"></el-backtop>
     <el-row class="tac">
       <el-col :span="4">
-        <tree-menu @onSelect=onSelect :files=options></tree-menu>
+        <div class="left">
+          <tree-menu @onSelect=onSelect :files=options></tree-menu>
+        </div>
       </el-col>
       <el-col :span="20">
         <div class="content">
@@ -117,7 +119,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.content {
+.content,.left {
   height: 100vh;
   overflow: scroll;
 }
