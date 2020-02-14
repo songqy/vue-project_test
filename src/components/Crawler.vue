@@ -8,7 +8,7 @@
         </div>
       </el-col>
       <el-col :span="20">
-        <div class="content">
+        <div class="content" id="imgContent">
           <div v-for="img in imgs" :key=img.index>
             <img :src=img.src>
           </div>
@@ -91,6 +91,7 @@ export default {
   imgs: [],
 
   mounted: async function () {
+    // TODO 菜单栏数据可以异步加载
     const { content } = await request.get('/api_crawler/files')
     this.files = cloneDeep(content.files)
     this.options = parseOptions(content.files)
@@ -103,6 +104,8 @@ export default {
       console.log('onSelect,', values)
       const imgs = getImgList(this.files, values)
       this.imgs = parseImgs(imgs, values)
+      // 滚动条回到顶部
+      document.getElementById('imgContent').scrollTop = 0
     }
   },
 
