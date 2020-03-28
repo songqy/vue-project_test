@@ -4,9 +4,9 @@
     :unique-opened="true"
     @select="handleSelect"
   >
-    <div v-for="file in files" :key=file.value>
-      <tree-sub-menu :file=file></tree-sub-menu>
-    </div>
+    <template v-for="file in files">
+      <tree-sub-menu :file="file" :key="file.index"></tree-sub-menu>
+    </template>
   </el-menu>
 </template>
 
